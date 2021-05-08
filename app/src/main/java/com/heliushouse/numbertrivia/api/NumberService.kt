@@ -1,8 +1,15 @@
 package com.heliushouse.numbertrivia.api
 
+import com.heliushouse.numbertrivia.model.NumberResponse
+import retrofit2.http.GET
+import retrofit2.http.Path
+
 interface NumberService {
+
+    @GET("{number}/{type}?json")
+    suspend fun getInfo(@Path("number") number: String, @Path("type") type: String): NumberResponse
+
     companion object {
-        // FIXME: 01-03-2021 add correct api below
-        const val NUMBER_API_URL = "https://api.github.com/"
+        const val NUMBER_API_URL = "http://numbersapi.com/"
     }
 }
