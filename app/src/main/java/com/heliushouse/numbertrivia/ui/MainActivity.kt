@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.heliushouse.numbertrivia.R
 import com.heliushouse.numbertrivia.databinding.ActivityMainBinding
+import com.heliushouse.numbertrivia.ui.number.NumberFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

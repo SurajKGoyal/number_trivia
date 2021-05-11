@@ -1,4 +1,4 @@
-package com.heliushouse.numbertrivia.ui
+package com.heliushouse.numbertrivia.ui.number
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,6 +45,10 @@ class NumberFragment : Fragment() {
                 is NumberResource.Success-> showTrivia(it.trivia)
                 is NumberResource.Error-> showError(it.error)
             }
+        }
+
+        viewModel.type.observe(requireActivity()){
+            binding.type.text = it
         }
     }
 

@@ -1,4 +1,4 @@
-package com.heliushouse.numbertrivia.ui
+package com.heliushouse.numbertrivia.ui.number
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.heliushouse.numbertrivia.model.NumberResponse
 import com.heliushouse.numbertrivia.repository.NumberRepository
+import com.heliushouse.numbertrivia.utils.Event
 import com.heliushouse.numbertrivia.utils.NumberResource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,11 +16,21 @@ import javax.inject.Inject
 @HiltViewModel
 class NumberViewModel @Inject constructor(val repository: NumberRepository): ViewModel() {
     private val _response = MutableLiveData<NumberResource>()
+    val dataList = ArrayList<String>()
+
+    val type = MutableLiveData<String>()
 
     val response: LiveData<NumberResource>
         get() = _response
 
-    fun getTrivia(number: String, type: String){
+    val number = MutableLiveData<String>()
+    val typeString = MutableLiveData<String>()
+
+    private val _showSnackMessage = MutableLiveData<Event<String>>()
+    val showSnackMessage: LiveData<Event<String>>
+        get() = _showSnackMessage
+
+    private fun getTrivia(number: String, type: String){
         viewModelScope.launch(Dispatchers.IO) {
             _response.value = NumberResource.Loading("Trivia is on the way")
             try {
@@ -31,6 +42,23 @@ class NumberViewModel @Inject constructor(val repository: NumberRepository): Vie
 
            
         }
+    }
+
+    fun prepareDataList(){
+        viewModelScope.launch(Dispatchers.IO) {
+            dataList.add(0, "trivia")
+            dataList.add(1, "math")
+            dataList.add(2, "date")
+            dataList.add(3, "year")
+        }
+    }
+
+    fun submit(){
+        if(number.value.isNullOrEmpty() || typeString.value.isNullOrEmpty()){
+            _showSnackMessage.value = Event("Something is missing!")
+            return
+        }
+        getTrivia(number.value!!, typeString.value!!)
     }
 
 }
