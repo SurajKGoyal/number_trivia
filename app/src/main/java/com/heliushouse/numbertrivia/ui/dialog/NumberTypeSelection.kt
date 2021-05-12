@@ -46,6 +46,7 @@ class NumberTypeSelection : BottomSheetDialogFragment(), RecyclerItemClickListen
     }
 
     override fun onClick(data: String) {
-        viewModel.type.value = data
+        viewModel.typeString.value = data
+        dismiss()
     }
 }

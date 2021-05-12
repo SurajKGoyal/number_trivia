@@ -24,6 +24,9 @@ class NumberTypeAdapter(val list: ArrayList<String>, val listener: RecyclerItemC
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.name.text = list[position]
+        holder.binding.name.setOnClickListener {
+            listener.onClick(list[position])
+        }
     }
 
     override fun getItemCount() = list.size

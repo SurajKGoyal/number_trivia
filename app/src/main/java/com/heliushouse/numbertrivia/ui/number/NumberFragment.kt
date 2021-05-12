@@ -52,7 +52,7 @@ class NumberFragment : Fragment() {
             }
         }
 
-        viewModel.type.observe(requireActivity()) {
+        viewModel.typeString.observe(requireActivity()) {
             binding.type.text = it
         }
 

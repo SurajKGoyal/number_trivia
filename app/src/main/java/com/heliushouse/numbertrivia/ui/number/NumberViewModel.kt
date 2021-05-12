@@ -40,12 +40,12 @@ class NumberViewModel @Inject constructor(private val repository: NumberReposito
 
     private fun getTrivia(number: String, type: String){
         viewModelScope.launch(Dispatchers.IO) {
-            _response.value = NumberResource.Loading("Trivia is on the way")
+            _response.postValue(NumberResource.Loading("Trivia is on the way"))
             try {
                 val numberTrivia = repository.getTrivia(number, type)
-                _response.value = NumberResource.Success(numberTrivia.text ?: "No Trivia Found")
+                _response.postValue(NumberResource.Success(numberTrivia.text ?: "No Trivia Found"))
             }catch (e: Exception){
-                _response.value = NumberResource.Error("Something went wrong")
+                _response.postValue(NumberResource.Error("Something went wrong"))
             }
 
            
@@ -82,10 +82,6 @@ class NumberViewModel @Inject constructor(private val repository: NumberReposito
         number.value = ""
         typeString.value = ""
         _reset.value = Event(true)
-    }
-
-    fun showChoices(){
-        _choices.value = Event(true)
     }
 
 }
