@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.google.android.material.snackbar.Snackbar
 import com.heliushouse.numbertrivia.R
 import com.heliushouse.numbertrivia.databinding.FragmentNumberBinding
+import com.heliushouse.numbertrivia.ui.dialog.NumberTypeSelection
 import com.heliushouse.numbertrivia.utils.NumberResource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class NumberFragment : Fragment() {
 
     lateinit var binding: FragmentNumberBinding
-    private val viewModel: NumberViewModel by viewModels()
+    private val viewModel: NumberViewModel by  activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class NumberFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_number, container, false)
         binding.showProgress = false
+        binding.showResult = false
         return binding.root
     }
 
@@ -39,34 +42,64 @@ class NumberFragment : Fragment() {
     }
 
     private fun addObservers() {
-        viewModel.response.observe(requireActivity()){
-            when(it){
-                is NumberResource.Loading-> showDialog()
-                is NumberResource.Success-> showTrivia(it.trivia)
-                is NumberResource.Error-> showError(it.error)
+        binding.viewModel = viewModel
+        viewModel.prepareDataList()
+        viewModel.response.observe(requireActivity()) {
+            when (it) {
+                is NumberResource.Loading -> showDialog()
+                is NumberResource.Success -> showTrivia(it.trivia)
+                is NumberResource.Error -> showError(it.error)
             }
         }
 
-        viewModel.type.observe(requireActivity()){
+        viewModel.type.observe(requireActivity()) {
             binding.type.text = it
+        }
+
+        viewModel.showSnackMessage.observe(requireActivity()) {
+            it.getContentIfNotHandled()?.let { message ->
+                showError(message)
+            }
+        }
+
+        viewModel.reset.observe(requireActivity()) {
+            it.getContentIfNotHandled()?.let { shouldReset ->
+                if(shouldReset){
+                    binding.showResult = false
+                }
+            }
+        }
+
+        binding.typeField.setOnClickListener {
+            openBottomSheet()
         }
     }
 
-    private fun showDialog(){
+    private fun showDialog() {
         binding.showProgress = true
     }
-    private fun hideDialog(){
+
+    private fun hideDialog() {
         binding.showProgress = false
     }
-    private fun showTrivia(trivia: String){
+
+    private fun showTrivia(trivia: String) {
         hideDialog()
+        binding.showResult = true
+        binding.trivia.text = trivia
     }
-    private fun showError(error: String){
+
+    private fun showError(error: String) {
         hideDialog()
         Snackbar.make(binding.root, error, Snackbar.LENGTH_SHORT).apply {
             animationMode = Snackbar.ANIMATION_MODE_SLIDE
             show()
         }
+    }
+
+    private fun openBottomSheet(){
+        val numberTypeSelection = NumberTypeSelection()
+        numberTypeSelection.show(childFragmentManager, "trivia_type")
     }
 
     companion object {

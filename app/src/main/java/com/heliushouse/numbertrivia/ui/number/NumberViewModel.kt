@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NumberViewModel @Inject constructor(val repository: NumberRepository): ViewModel() {
+class NumberViewModel @Inject constructor(private val repository: NumberRepository): ViewModel() {
     private val _response = MutableLiveData<NumberResource>()
     val dataList = ArrayList<String>()
 
@@ -25,6 +25,14 @@ class NumberViewModel @Inject constructor(val repository: NumberRepository): Vie
 
     val number = MutableLiveData<String>()
     val typeString = MutableLiveData<String>()
+
+    private val _reset = MutableLiveData<Event<Boolean>>()
+    val reset: LiveData<Event<Boolean>>
+        get() = _reset
+
+    private val _choices = MutableLiveData<Event<Boolean>>()
+    val choices: LiveData<Event<Boolean>>
+        get() = _choices
 
     private val _showSnackMessage = MutableLiveData<Event<String>>()
     val showSnackMessage: LiveData<Event<String>>
@@ -53,12 +61,31 @@ class NumberViewModel @Inject constructor(val repository: NumberRepository): Vie
         }
     }
 
-    fun submit(){
+    fun submit(buttonType: Int){
+        if(buttonType == 1){
+           getData()
+        }else{
+            resetData()
+        }
+
+    }
+
+    private fun getData(){
         if(number.value.isNullOrEmpty() || typeString.value.isNullOrEmpty()){
             _showSnackMessage.value = Event("Something is missing!")
             return
         }
         getTrivia(number.value!!, typeString.value!!)
+    }
+
+    private fun resetData(){
+        number.value = ""
+        typeString.value = ""
+        _reset.value = Event(true)
+    }
+
+    fun showChoices(){
+        _choices.value = Event(true)
     }
 
 }

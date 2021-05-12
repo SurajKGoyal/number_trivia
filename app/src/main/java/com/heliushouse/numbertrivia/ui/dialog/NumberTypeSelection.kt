@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.heliushouse.numbertrivia.R
 import com.heliushouse.numbertrivia.callbacks.RecyclerItemClickListener
@@ -14,7 +14,7 @@ import com.heliushouse.numbertrivia.ui.number.NumberViewModel
 
 class NumberTypeSelection : BottomSheetDialogFragment(), RecyclerItemClickListener {
 
-    private val viewModel: NumberViewModel by viewModels()
+    private val viewModel: NumberViewModel by activityViewModels()
     lateinit var binding: TypeSelectionBottomSheetBinding
 
     override fun onCreateView(
@@ -32,20 +32,17 @@ class NumberTypeSelection : BottomSheetDialogFragment(), RecyclerItemClickListen
         return binding.root
     }
 
-    override fun getTheme(): Int {
-        return R.style.RoundedCornerBottomSheetDialog
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         addObservers()
     }
 
-    private fun setListener(){}
+    private fun setListener() {}
 
-    private fun addObservers(){
-
+    private fun addObservers() {
+        binding.viewModel = viewModel
+        binding.choiceList.adapter = NumberTypeAdapter(viewModel.dataList, this)
     }
 
     override fun onClick(data: String) {
