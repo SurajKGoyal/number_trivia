@@ -8,7 +8,7 @@ import com.heliushouse.numbertrivia.R
 import com.heliushouse.numbertrivia.callbacks.RecyclerItemClickListener
 import com.heliushouse.numbertrivia.databinding.SelectionItemBinding
 
-class NumberTypeAdapter(val list: ArrayList<String>, val listener: RecyclerItemClickListener) :
+class NumberTypeAdapter(private val list: ArrayList<String>, private val listener: RecyclerItemClickListener) :
     RecyclerView.Adapter<NumberTypeAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
