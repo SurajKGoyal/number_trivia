@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.heliushouse.numbertrivia.model.NumberResponse
 import com.heliushouse.numbertrivia.repository.NumberRepository
 import com.heliushouse.numbertrivia.utils.Event
 import com.heliushouse.numbertrivia.utils.NumberResource
@@ -14,9 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NumberViewModel @Inject constructor(private val repository: NumberRepository): ViewModel() {
+class NumberViewModel @Inject constructor(private val repository: NumberRepository) : ViewModel() {
     private val _response = MutableLiveData<NumberResource>()
-    val dataList = ArrayList<String>()
 
     val type = MutableLiveData<String>()
 
@@ -30,55 +28,51 @@ class NumberViewModel @Inject constructor(private val repository: NumberReposito
     val reset: LiveData<Event<Boolean>>
         get() = _reset
 
-    private val _choices = MutableLiveData<Event<Boolean>>()
-    val choices: LiveData<Event<Boolean>>
-        get() = _choices
-
     private val _showSnackMessage = MutableLiveData<Event<String>>()
     val showSnackMessage: LiveData<Event<String>>
         get() = _showSnackMessage
 
-    private fun getTrivia(number: String, type: String){
+    private fun getTrivia(number: String, type: String) {
         viewModelScope.launch(Dispatchers.IO) {
             _response.postValue(NumberResource.Loading("Trivia is on the way"))
             try {
                 val numberTrivia = repository.getTrivia(number, type)
                 _response.postValue(NumberResource.Success(numberTrivia.text ?: "No Trivia Found"))
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 _response.postValue(NumberResource.Error("Something went wrong"))
             }
 
-           
+
         }
     }
 
-    fun prepareDataList(){
-        viewModelScope.launch(Dispatchers.IO) {
-            dataList.add(0, "trivia")
-            dataList.add(1, "math")
-            dataList.add(2, "date")
-            dataList.add(3, "year")
-        }
+    fun getDataList(): ArrayList<String> {
+        val dataList = ArrayList<String>()
+        dataList.add(0, "trivia")
+        dataList.add(1, "math")
+        dataList.add(2, "date")
+        dataList.add(3, "year")
+        return dataList
     }
 
-    fun submit(buttonType: Int){
-        if(buttonType == 1){
-           getData()
-        }else{
+    fun submit(buttonType: Int) {
+        if (buttonType == 1) {
+            getData()
+        } else {
             resetData()
         }
 
     }
 
-    private fun getData(){
-        if(number.value.isNullOrEmpty() || typeString.value.isNullOrEmpty()){
+    private fun getData() {
+        if (number.value.isNullOrEmpty() || typeString.value.isNullOrEmpty()) {
             _showSnackMessage.value = Event("Something is missing!")
             return
         }
         getTrivia(number.value!!, typeString.value!!)
     }
 
-    private fun resetData(){
+    private fun resetData() {
         number.value = ""
         typeString.value = ""
         _reset.value = Event(true)

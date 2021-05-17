@@ -43,7 +43,6 @@ class NumberFragment : Fragment() {
 
     private fun addObservers() {
         binding.viewModel = viewModel
-        viewModel.prepareDataList()
         viewModel.response.observe(requireActivity()) {
             when (it) {
                 is NumberResource.Loading -> showDialog()
@@ -66,6 +65,7 @@ class NumberFragment : Fragment() {
             it.getContentIfNotHandled()?.let { shouldReset ->
                 if(shouldReset){
                     binding.showResult = false
+                    binding.number.setText("")
                 }
             }
         }

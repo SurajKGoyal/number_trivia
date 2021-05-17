@@ -42,7 +42,7 @@ class NumberTypeSelection : BottomSheetDialogFragment(), RecyclerItemClickListen
 
     private fun addObservers() {
         binding.viewModel = viewModel
-        binding.choiceList.adapter = NumberTypeAdapter(viewModel.dataList, this)
+        binding.choiceList.adapter = NumberTypeAdapter(viewModel.getDataList(), this)
     }
 
     override fun onClick(data: String) {
