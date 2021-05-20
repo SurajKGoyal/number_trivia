@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.heliushouse.numbertrivia.repository.NumberRepository
+import com.heliushouse.numbertrivia.repository.Repository
 import com.heliushouse.numbertrivia.utils.Event
 import com.heliushouse.numbertrivia.utils.NumberResource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NumberViewModel @Inject constructor(private val repository: NumberRepository) : ViewModel() {
+class NumberViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
     private val _response = MutableLiveData<NumberResource>()
 
     val type = MutableLiveData<String>()

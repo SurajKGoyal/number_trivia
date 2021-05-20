@@ -3,6 +3,8 @@ package com.heliushouse.numbertrivia.di
 import android.content.Context
 import com.heliushouse.numbertrivia.BuildConfig
 import com.heliushouse.numbertrivia.api.NumberService
+import com.heliushouse.numbertrivia.repository.NumberRepository
+import com.heliushouse.numbertrivia.repository.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,4 +66,10 @@ object NetworkModule {
     fun providesGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
+
+    @Singleton
+    @Provides
+    fun provideNumberRepository(
+        api: NumberService
+    ) = NumberRepository(api) as Repository
 }
