@@ -35,7 +35,7 @@ class NumberViewModel @Inject constructor(private val repository: Repository) : 
 
     private fun getTrivia(number: String, type: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _response.postValue(NumberResource.Loading("Trivia is on the way"))
+            _response.postValue(NumberResource.Loading)
             try {
                 val numberTrivia = repository.getTrivia(number, type)
                 _response.postValue(NumberResource.Success(numberTrivia.text ?: "No Trivia Found"))
